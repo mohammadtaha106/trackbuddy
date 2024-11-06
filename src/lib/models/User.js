@@ -13,6 +13,10 @@ location : {
 profileImg : String,
 address : String,
 bio : String,
+role : { type: String ,
+    default : "user",
+    enum :["user", 'admin']
+}
 
 });
 
