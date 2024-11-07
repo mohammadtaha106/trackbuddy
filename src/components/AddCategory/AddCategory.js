@@ -1,5 +1,5 @@
-"use client"
-import  React, { useState } from "react";
+"use client";
+import React, { useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
 // import { useMediaQuery } from "@/hooks/use-media-query";
@@ -24,6 +24,9 @@ import {
 } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { uploadImage } from "@/actions/upload";
+import { addCategory } from "@/actions/categories";
+import { useToast } from "@/hooks/use-toast";
 
 export function AddCategory() {
   const [open, setOpen] = useState(false);
@@ -39,7 +42,8 @@ export function AddCategory() {
           <DialogHeader>
             <DialogTitle>Add Category</DialogTitle>
             <DialogDescription>
-              Make changes to your profile here. Click save when {`you're`} done.
+              Make changes to your profile here. Click save when {`you're`}{" "}
+              done.
             </DialogDescription>
           </DialogHeader>
           <ProfileForm />
@@ -72,15 +76,43 @@ export function AddCategory() {
 }
 
 function ProfileForm({ className }) {
+  const formRef = useRef();
+  const { toast } = useToast();
+
+  const handleAddCategory = async (formData) => {
+    console.log("formData=>", formData);
+
+    let uploadLink = await uploadImage(formData);
+    const obj = {
+      title: formData.get("title"),
+      description: formData.get("description"),
+      thumbnail: uploadLink,
+    };
+    await addCategory(obj);
+    toast({
+      title: "Category added successfully",
+    });
+    formRef?.current?.reset();
+
+  };
   return (
-    <form className={cn("grid items-start gap-4", className)}>
+    <form ref={formRef} action={handleAddCategory}>
       <div className="grid gap-2">
-        <Label htmlFor="email">Email</Label>
-        <Input type="email" id="email" defaultValue="shadcn@example.com" />
+        <Label htmlFor="title">Title</Label>
+        <Input id="title" name="title" placeholder="sports" required />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="username">Username</Label>
-        <Input id="username" defaultValue="@shadcn" />
+        <Label htmlFor="description">Description</Label>
+        <Input
+          id="description"
+          name="description"
+          required
+          placeholder="description"
+        />
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="thumbnail">Thumbnail</Label>
+        <Input id="thumbnail" name="thumbnail" type="file" required />
       </div>
       <Button type="submit">Save changes</Button>
     </form>

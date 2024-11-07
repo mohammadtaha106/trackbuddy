@@ -4,7 +4,7 @@ import Link from "next/link"
 import { auth } from "../../../../auth"
 import { redirect } from "next/navigation";
 
-
+import { Toaster } from "@/components/ui/toaster"
 export default async function Layout({children}){
   const session = await auth()
   console.log("session =>",session);
@@ -31,7 +31,7 @@ return(
   <TabsContent value="categories">{children}</TabsContent>
   <TabsContent value="subcategories">{children}</TabsContent>
 </Tabs>
-
+<Toaster />
         
         </body>
     </html>

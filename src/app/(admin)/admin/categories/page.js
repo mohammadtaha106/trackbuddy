@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 
 import Image from "next/image";
 import { AddCategory } from "@/components/AddCategory/AddCategory";
+import { getCategories } from "@/actions/categories";
 
 const categories = [
   {
@@ -33,7 +34,9 @@ const categories = [
   },
 ];
 
-export default function Categories() {
+export default async function Categories() {
+  const categories = await getCategories();
+  console.log("categories=>", categories);
   return (
     <div className="min-h-screen mx-10 px-1">
       <div className="flex justify-between items-center my-4">
@@ -51,7 +54,7 @@ export default function Categories() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {categories.map((category) => (
+          {categories.categories?.map((category) => (
             <TableRow key={category.title}>
               <TableCell className="text-right">
                 <Image
